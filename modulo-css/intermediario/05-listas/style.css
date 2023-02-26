@@ -1,0 +1,28 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+h1 {
+    margin: 20px 0px;
+}
+
+ul {
+    list-style: square inside url(./images/icone.png);
+    background-color: aquamarine;
+}
+
+ul li {
+    border: 1px solid black;
+    padding: 20px;
+}
+
+ol {
+    list-style: inside square;
+    background-color: chartreuse; 
+}
+
+ol li {
+    border: 1px solid black;
+    padding: 20px;
+}

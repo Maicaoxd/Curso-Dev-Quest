@@ -1,0 +1,21 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    border: solid 0px;
+}
+h1 {
+    background-color: red;
+}
+
+div {
+    background-color: orange;
+}
+
+p {
+    margin: 20px;
+    padding: 20px;
+    border: solid 10px yellow;
+    background-color: green;;
+    color: white;
+}
+
