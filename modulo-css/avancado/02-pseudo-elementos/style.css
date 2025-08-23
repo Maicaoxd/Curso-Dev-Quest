@@ -1,0 +1,40 @@
+/* seletor::pseudo-elemento {
+    propriedade: valor;
+} */
+
+* {
+    background-color: black;
+    color: white;
+}
+
+p {
+    font-size: 24px;
+}
+
+.paragrafo::first-letter {
+    color: coral;
+}
+
+p::first-line {
+    color: aquamarine;
+}
+
+li::marker {
+    color: red;
+    font-size: 30px;
+}
+
+h2::before {
+    content: "";
+    background: url(https://placekitten.com/164/100) center center no-repeat;
+    display: inline-block;
+    width: 164px;
+    height: 100px;
+}
+
+h2::after {
+    content: "Gatinho fofo";
+    display: block;
+    width: 164px;
+    text-align: center;
+}

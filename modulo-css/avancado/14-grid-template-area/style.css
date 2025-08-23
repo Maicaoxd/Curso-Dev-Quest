@@ -1,0 +1,44 @@
+* {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 64px;
+}
+
+.cabecalho {
+    background-color: aquamarine;
+    grid-area: cabecalho;
+}
+
+.menu {
+    background-color: cornflowerblue;
+    grid-area: menu;
+}
+
+.secao-principal {
+    background-color: hotpink;
+    grid-area: secao-principal;
+}
+
+.aside {
+    background-color: orangered;
+    grid-area: aside;
+}
+
+.rodape {
+    background-color: green;
+    grid-area: rodape;
+}
+
+.container {
+    display: grid;
+    /* grid-template-areas:
+        "cabecalho cabecalho cabecalho"
+        "menu secao-principal aside"
+        "rodape rodape rodape"; */
+    grid:
+        "cabecalho cabecalho cabecalho" 20vh
+        "menu secao-principal aside" 50vh
+        "rodape rodape rodape" 30vh
+        / 20vw auto 20vw;
+}

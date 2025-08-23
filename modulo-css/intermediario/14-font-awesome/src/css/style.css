@@ -1,0 +1,10 @@
+* {
+    font-size: 240px;
+}
+.fa-wine-glass-alt {
+    color: purple;
+}
+
+.fa-wine-glass-alt:hover {
+    color: green;
+}

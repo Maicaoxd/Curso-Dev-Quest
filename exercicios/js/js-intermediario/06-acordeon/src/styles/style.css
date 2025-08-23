@@ -1,0 +1,87 @@
+.container {
+    height: 100vh;
+    background-color: #E5E5E5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    position: relative;
+    background-color: #fff;
+    border-radius: 21px;
+    width: 655px;
+    min-height: 347px;
+    padding: 40px;
+    box-shadow: 0px 20px 20px -10px rgba(0,0,0,0.25);
+}
+
+.card img {
+    position: absolute;
+    right: 75%;
+    height: 293px;
+    width: 278px;
+}
+
+.card .conteudo {
+    margin-left: 200px;
+    overflow: hidden;
+}
+
+.card .conteudo h1 {
+    font-weight: 700;
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.acordeon {
+    margin-bottom: 15px;
+}
+
+.acordeon hr{
+    margin: 15px 0;
+}
+
+.acordeon .acordeon-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.acordeon .acordeon-header i{
+    color: #A6A6A6;
+    width: 15px;
+    height: 10px;
+}
+
+.fa-chevron-down{
+    transition: transform .2s linear;
+}
+
+.vermelho{
+    color: #F14624 !important;
+    transform: rotate(180deg)
+}
+
+.acordeon-titulo {
+    font-weight: 500;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
+.acordeon-texto {
+    font-weight: 300;
+    font-size: 15px;
+    opacity: 0;
+    height: 0;
+    transition: opacity .3s;
+    overflow: hidden;
+}
+
+.ativo {
+    height: 100%;
+    opacity: 1;
+    transform: ;
+}

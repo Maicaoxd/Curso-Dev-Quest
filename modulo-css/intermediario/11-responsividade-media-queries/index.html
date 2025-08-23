@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsividade e media queries</title>
+
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <h1 class="logo">Logo</h1>
+        <nav>
+            <ul>
+                <li><a href="#quem-somos">Quem Somos</a></li>
+                <li><a href="#onde-estamos">Onde Estamos</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="painel">
+            <div class="info">
+                <h1>Um filme do batman</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime incidunt illo facere neque, numquam ullam, dolorem nesciunt est beatae quasi obcaecati at corrupti fugiat. In debitis beatae nostrum enim quod!</p>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos asperiores quos non debitis accusamus, distinctio alias animi molestias illo quia earum tempore doloribus similique voluptates et ex sit natus sapiente!</p>
+            </div>
+
+            <div class="image">
+                <picture>
+                    <source srcset="https://placekitten.com/445/294" media="(max-width: 600px)">
+                    
+                    <img src="https://placekitten.com/1024/295" alt="filme do batman">
+                </picture>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

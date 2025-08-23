@@ -1,0 +1,56 @@
+body {
+    margin: 0 40px;
+    padding: 0;
+    height: 100vh;
+    background-image: url('../images/image1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    justify-content: space-between;
+}
+
+.esquerda {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.card {
+    background-color: #fff;
+    height: 700px;
+    width: 620px;
+    border-radius: 25px;
+    padding: 80px;
+    gap: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card .titulo {
+    font-size: 50px;
+    font-weight: 400;
+}
+
+.card p {
+    font-size: 25px;
+    font-weight: 300;
+}
+
+.card .link {
+    font-size: 30px;
+    font-weight: 700;
+    color: #C50000;
+}
+
+svg {
+    font-size: 50pt !important;
+    color: #fff;
+}
+
+.opacidade {
+    opacity: 0.5;
+    pointer-events: none;
+}
