@@ -1,0 +1,55 @@
+body {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    height: 100vh;
+    background: hsl(218, 23%, 16%);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.container .cartao {
+    background: hsl(217, 19%, 24%);
+    width: 550px;
+    height: 330px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.container .cartao .titulo {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: var(--cor-verde);
+    margin-top: 50px;
+}
+
+.container .cartao .conselho {
+    font-size: 28px;
+    color: hsl(193, 38%, 86%);
+    text-align: center;
+    padding: 40px;
+}
+
+.container .cartao .dado {
+    background: var(--cor-verde);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    transform: translateY(50%);
+}
+
+.container .cartao .dado:hover {
+    color: #53FFAB;
+    cursor: pointer;
+    box-shadow: 0 5px 30px var(--cor-verde);
+}

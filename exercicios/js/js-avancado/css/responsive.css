@@ -1,0 +1,18 @@
+@media(max-width: 768px) {
+    .container .cartao {
+        width: 300px;
+        height: 320px;
+    }
+
+    .container .cartao .titulo {
+        font-size: 9px;
+    }
+
+    .container .cartao .conselho {
+        font-size: 17px;
+    }
+
+    .container .cartao .quebra-de-linha {
+        transform: scale(0.8);
+    }
+}
