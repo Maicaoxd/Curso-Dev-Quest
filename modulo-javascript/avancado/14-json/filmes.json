@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "titulo": "Vingadores",
+  "sinopse": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, ut delectus. Iure voluptatibus autem dolores ex icta officia cupiditate magni? Totam iste tenetur impedit! Unde aliquid repellat cupiditate quia velit.",
+  "genero": "Ação",
+  "elenco": ["Tom Hiddleston", "Samuel L. Jackson", "Chris Evans"],
+  "direcao": "Joss Whedon"
+}
