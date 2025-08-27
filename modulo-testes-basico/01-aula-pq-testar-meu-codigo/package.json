@@ -1,0 +1,16 @@
+{
+  "name": "01-aula-pq-testar-meu-codigo",
+  "version": "1.0.0",
+  "main": "calcular-valor-pedido.js",
+  "scripts": {
+    "test": "jest",
+    "watch": "jest --watchAll"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^30.1.1"
+  }
+}
