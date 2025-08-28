@@ -1,47 +1,215 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Central de Projetos – Dev Quest</title>
   <style>
-    :root{
-      --bg:#0f172a;/* slate-900 */
-      --card:#111827;/* gray-900 */
-      --muted:#94a3b8;/* slate-400 */
-      --text:#e5e7eb;/* gray-200 */
-      --accent:#22d3ee;/* cyan-400 */
-      --ring:#38bdf8;/* sky-400 */
+    :root {
+      --bg: #0f172a;
+      /* slate-900 */
+      --card: #111827;
+      /* gray-900 */
+      --muted: #94a3b8;
+      /* slate-400 */
+      --text: #e5e7eb;
+      /* gray-200 */
+      --accent: #22d3ee;
+      /* cyan-400 */
+      --ring: #38bdf8;
+      /* sky-400 */
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;background:linear-gradient(120deg,#0b1022,#0f172a);color:var(--text);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    header{display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:40px;height:40px;border-radius:12px;background:radial-gradient(circle at 30% 30%, #67e8f9, #22d3ee 40%, #0ea5e9 70%, #0f172a 100%);box-shadow:0 4px 18px rgba(34,211,238,.35)}
-    h1{font-size:clamp(1.2rem,2.4vw,1.8rem);margin:0}
-    .muted{color:var(--muted)}
-    .controls{display:flex;gap:10px;align-items:center}
-    input[type="search"]{appearance:none;border:1px solid rgba(148,163,184,.25);background:rgba(255,255,255,.03);color:var(--text);border-radius:12px;padding:12px 14px;min-width:260px;outline:none}
-    input[type="search"]:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(56,189,248,.25)}
-    nav.breadcrumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0;color:var(--muted);font-size:.95rem}
-    nav.breadcrumb a{color:var(--text);text-decoration:none;border:1px solid rgba(148,163,184,.25);padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.03)}
-    nav.breadcrumb .sep{opacity:.6}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:12px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(148,163,184,.15);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .12s ease, border-color .12s ease;cursor:default}
-    .card:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.5)}
-    .clickable{cursor:pointer}
-    .pill{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
-    .pill .dot{width:8px;height:8px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.25)}
-    .links{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
-    .btn{border:1px solid rgba(148,163,184,.25);background:rgba(34,211,238,.1);color:#e6fbff;padding:8px 10px;border-radius:10px;text-decoration:none}
-    .btn.gh{background:transparent}
-    footer{margin:26px 0 6px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:#0b1220;border:1px solid rgba(148,163,184,.25);padding:.1rem .35rem;border-radius:6px}
-    .badge{font-size:.75rem;border:1px solid rgba(148,163,184,.25);padding:2px 6px;border-radius:999px}
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(120deg, #0b1022, #0f172a);
+      color: var(--text);
+      font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+      flex-wrap: wrap
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 30%, #67e8f9, #22d3ee 40%, #0ea5e9 70%, #0f172a 100%);
+      box-shadow: 0 4px 18px rgba(34, 211, 238, .35)
+    }
+
+    h1 {
+      font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+      margin: 0
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    input[type="search"] {
+      appearance: none;
+      border: 1px solid rgba(148, 163, 184, .25);
+      background: rgba(255, 255, 255, .03);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 14px;
+      min-width: 260px;
+      outline: none
+    }
+
+    input[type="search"]:focus {
+      border-color: var(--ring);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, .25)
+    }
+
+    nav.breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin: 14px 0;
+      color: var(--muted);
+      font-size: .95rem
+    }
+
+    nav.breadcrumb a {
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid rgba(148, 163, 184, .25);
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .03)
+    }
+
+    nav.breadcrumb .sep {
+      opacity: .6
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 12px
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .02));
+      border: 1px solid rgba(148, 163, 184, .15);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform .12s ease, border-color .12s ease;
+      cursor: default
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(34, 211, 238, .5)
+    }
+
+    .clickable {
+      cursor: pointer
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, .25)
+    }
+
+    .links {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      border: 1px solid rgba(148, 163, 184, .25);
+      background: rgba(34, 211, 238, .1);
+      color: #e6fbff;
+      padding: 8px 10px;
+      border-radius: 10px;
+      text-decoration: none
+    }
+
+    .btn.gh {
+      background: transparent
+    }
+
+    footer {
+      margin: 26px 0 6px;
+      color: var(--muted);
+      font-size: .9rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #0b1220;
+      border: 1px solid rgba(148, 163, 184, .25);
+      padding: .1rem .35rem;
+      border-radius: 6px
+    }
+
+    .badge {
+      font-size: .75rem;
+      border: 1px solid rgba(148, 163, 184, .25);
+      padding: 2px 6px;
+      border-radius: 999px
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <header>
@@ -62,7 +230,8 @@
     <div id="grid" class="grid" role="list"></div>
 
     <footer>
-      <div>Proprietário: <span id="owner" class="kbd"></span> • Repositório: <span id="repo" class="kbd"></span> • Branch: <span id="branch" class="kbd"></span></div>
+      <div>Proprietário: <span id="owner" class="kbd"></span> • Repositório: <span id="repo" class="kbd"></span> •
+        Branch: <span id="branch" class="kbd"></span></div>
       <div>Dica: pressione <span class="kbd">/</span> para focar na busca</div>
     </footer>
   </div>
@@ -70,7 +239,7 @@
   <script>
     /*** CONFIGURÁVEL ***/
     const OWNER = "Maicaoxd";            // seu usuário no GitHub
-    const REPO  = "Curso-Dev-Quest";     // nome do repositório
+    const REPO = "Curso-Dev-Quest";     // nome do repositório
     const BRANCH = "main";               // branch padrão (main/master)
 
     // Regras simples para esconder pastas que não são projetos
@@ -78,7 +247,7 @@
 
     const pretty = (s) => s
       .replace(/[-_]/g, " ")
-      .replace(/\b([a-z])/g, (m) => m.toUpperCase());
+      .replace(/([a-z])/g, (m) => m.toUpperCase());
 
     const basePagesUrl = `https://${OWNER}.github.io/${REPO}`;
 
@@ -91,35 +260,68 @@
     const crumb = document.getElementById("crumb");
 
     // Acessibilidade rápida: focar busca com /
-    window.addEventListener("keydown", (e)=>{
-      if(e.key === "/" && document.activeElement !== q){ e.preventDefault(); q.focus(); }
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement !== q) { e.preventDefault(); q.focus(); }
     });
 
     // Estado da navegação
     let currentPath = ""; // vazio = raiz do repo
     let currentEntries = []; // cache da pasta atual
 
-    // Helpers API
-    const apiList = (path) => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path ? encodeURIComponent(path) : ""}?ref=${BRANCH}`;
+    // APIs: GitHub (primário) e jsDelivr (fallback) para contornar 403/rate limit
+    const apiListGithub = (path) => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path ? encodeURIComponent(path) : ""}?ref=${BRANCH}`;
+    const apiListJsDelivr = (path) => `https://data.jsdelivr.com/v1/package/gh/${OWNER}/${REPO}@${BRANCH}${path ? "/" + path : ""}`;
     const githubTreeUrl = (path) => `https://github.com/${OWNER}/${REPO}/tree/${BRANCH}/${path ? encodeURIComponent(path) : ""}`;
     const pagesUrl = (path) => `${basePagesUrl}/${path ? encodeURIComponent(path) + "/" : ""}`;
 
-    function isIgnored(name){
+    function isIgnored(name) {
       return IGNORE_DIRS.has(name);
     }
 
-    async function hasIndexHtml(path){
-      const res = await fetch(apiList(path));
-      if(!res.ok) return { index:false, readme:false };
-      const items = await res.json();
-      const names = items.map(i => i.name.toLowerCase());
-      return {
-        index: names.includes("index.html") || names.includes("index.htm"),
-        readme: names.includes("readme.md") || names.includes("readme")
-      };
+    async function listDir(path) {
+      // 1) Tenta GitHub API
+      try {
+        const res = await fetch(apiListGithub(path));
+        if (res.ok) {
+          const items = await res.json();
+          return items.map(i => ({
+            name: i.name,
+            path: i.path,
+            type: i.type === 'dir' ? 'directory' : 'file'
+          }));
+        }
+        if (res.status !== 403) throw new Error(`HTTP ${res.status}`);
+      } catch (e) { /* continua no fallback */ }
+
+      // 2) Fallback: jsDelivr Data API (sem limites tão restritos)
+      const res2 = await fetch(apiListJsDelivr(path));
+      if (!res2.ok) throw new Error(`HTTP ${res2.status}`);
+      const data = await res2.json();
+      const files = Array.isArray(data.files) ? data.files : [];
+      const base = path ? path.replace(/\/$/, '') + '/' : '';
+      return files
+        .filter(f => f.name !== '.' && f.name !== '..')
+        .map(f => ({
+          name: f.name,
+          path: base + f.name,
+          type: f.type === 'directory' ? 'directory' : 'file'
+        }));
     }
 
-    function folderCard({ name, path, count }){
+    async function hasIndexHtml(path) {
+      try {
+        const items = await listDir(path);
+        const names = items.map(i => i.name.toLowerCase());
+        return {
+          index: names.includes('index.html') || names.includes('index.htm'),
+          readme: names.includes('readme.md') || names.includes('readme')
+        };
+      } catch {
+        return { index: false, readme: false };
+      }
+    }
+
+    function folderCard({ name, path, count }) {
       return `
         <article class="card clickable" data-path="${path}" role="listitem" aria-label="Abrir pasta ${name}">
           <div class="pill"><span class="dot" aria-hidden="true"></span> <strong>📁 ${pretty(name)}</strong></div>
@@ -131,8 +333,8 @@
         </article>`;
     }
 
-    function projectCard({ name, path, demo, readme }){
-      const ghUrl  = githubTreeUrl(path);
+    function projectCard({ name, path, demo, readme }) {
+      const ghUrl = githubTreeUrl(path);
       const demoUrl = demo ? pagesUrl(path) : null;
       return `
         <article class="card" role="listitem">
@@ -146,14 +348,14 @@
         </article>`;
     }
 
-    function render(entries){
+    function render(entries) {
       grid.innerHTML = entries.map(e => e.kind === 'dir' ? folderCard(e) : projectCard(e)).join("");
       grid.querySelectorAll('.clickable').forEach(el => {
         el.addEventListener('click', () => openPath(el.dataset.path));
       });
     }
 
-    function renderBreadcrumb(){
+    function renderBreadcrumb() {
       const parts = currentPath ? currentPath.split('/') : [];
       let acc = [];
       const items = [];
@@ -166,57 +368,54 @@
       });
       crumb.innerHTML = items.join('');
       crumb.querySelectorAll('a[data-path]').forEach(a => {
-        a.addEventListener('click', (e)=>{ e.preventDefault(); openPath(a.dataset.path); });
+        a.addEventListener('click', (e) => { e.preventDefault(); openPath(a.dataset.path); });
       });
     }
 
-    function filter(term){
-      term = (term||"").toLowerCase();
-      if(!term) return currentEntries;
+    function filter(term) {
+      term = (term || "").toLowerCase();
+      if (!term) return currentEntries;
       return currentEntries.filter(i => i.name.toLowerCase().includes(term) || i.path.toLowerCase().includes(term));
     }
 
-    async function openPath(path){
+    async function openPath(path) {
       currentPath = path || "";
       renderBreadcrumb();
       grid.innerHTML = `<div class="muted">Carregando…</div>`;
-      try{
-        const res = await fetch(apiList(currentPath));
-        if(!res.ok) throw new Error(`Falha ao ler ${currentPath||"/"}: ${res.status}`);
-        const items = await res.json();
+      try {
+        const items = await listDir(currentPath);
 
         // Diretores e "projetos" (pastas com index.html)
-        const dirs = items.filter(x => x.type === 'dir' && !isIgnored(x.name));
+        const dirs = items.filter(x => x.type === 'directory' && !isIgnored(x.name));
         const enriched = await Promise.all(dirs.map(async d => {
           const info = await hasIndexHtml(d.path);
-          // Se tem index.html, tratamos como projeto; senão, pasta navegável
           return info.index
-            ? { kind:'proj', name:d.name, path:d.path, demo:true, readme:info.readme }
-            : { kind:'dir', name:d.name, path:d.path };
+            ? { kind: 'proj', name: d.name, path: d.path, demo: true, readme: info.readme }
+            : { kind: 'dir', name: d.name, path: d.path };
         }));
 
         // Também tratamos a pasta atual como projeto caso ela própria tenha index.html
         const selfInfo = await hasIndexHtml(currentPath);
-        const entries = [...enriched].sort((a,b)=>a.name.localeCompare(b.name));
+        const entries = [...enriched].sort((a, b) => a.name.localeCompare(b.name));
         currentEntries = entries;
         render(entries);
 
-        // Se a própria pasta tem index, mostra um card do "Projeto atual"
-        if(selfInfo.index && currentPath){
-          const selfCard = projectCard({ name: currentPath.split('/').pop(), path: currentPath, demo:true, readme:selfInfo.readme });
+        if (selfInfo.index && currentPath) {
+          const selfCard = projectCard({ name: currentPath.split('/').pop(), path: currentPath, demo: true, readme: selfInfo.readme });
           grid.insertAdjacentHTML('afterbegin', selfCard);
         }
-      }catch(err){
-        grid.innerHTML = `<div class="muted">Erro ao carregar: ${err.message}</div>`;
+      } catch (err) {
+        grid.innerHTML = `<div class="muted">Erro ao carregar: ${err.message}. Tente recarregar. Se persistir, ativei fallback via jsDelivr (sem autenticação/limite rígido).`;
         console.error(err);
       }
     }
 
     // Busca dinâmica
-    q.addEventListener("input", ()=>{ render(filter(q.value)); });
+    q.addEventListener("input", () => { render(filter(q.value)); });
 
     // Inicializa na raiz
     openPath("");
   </script>
 </body>
+
 </html>
