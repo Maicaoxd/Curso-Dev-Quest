@@ -42,7 +42,7 @@ src/
 ## 🚀 Como rodar o projeto  
 1. Clonar o repositório  
 ```bash
-git clone https://github.com/Maicaoxd/Curso-Dev-Quest/desafios/react/react-props-eventos.git 
+git clone https://github.com/Maicaoxd/Curso-Dev-Quest.git 
 ```
 
 2. Instalar dependências
