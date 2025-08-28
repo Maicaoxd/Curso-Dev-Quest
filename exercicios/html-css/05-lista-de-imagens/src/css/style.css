@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container .lista {
+    display: flex;
+}
+
+.container .lista .imagem {
+    margin: 20px;
+}
+
+.container .lista .imagem .titulo,
+.container .lista .imagem .legenda {
+    color: #fff;
+    transform: translateY(-100px);
+    margin-left: 25px;
+}

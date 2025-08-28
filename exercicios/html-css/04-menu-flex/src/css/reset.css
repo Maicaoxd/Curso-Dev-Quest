@@ -1,0 +1,16 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-size: 15px;
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 400;
+}
+
+a {
+    text-decoration: none;
+    color: #000000;
+}
+
+ul, li {
+    list-style: none;
+}

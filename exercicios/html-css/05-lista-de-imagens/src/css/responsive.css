@@ -1,0 +1,11 @@
+@media(max-width:1500px) {
+    .container .lista {
+        display: flex;
+        flex-flow: column wrap;
+        margin: 45px 20px;
+    }
+
+    .container .lista .imagem {
+        margin: 0;
+    }
+}
