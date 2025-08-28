@@ -25,9 +25,13 @@
     .controls{display:flex;gap:10px;align-items:center}
     input[type="search"]{appearance:none;border:1px solid rgba(148,163,184,.25);background:rgba(255,255,255,.03);color:var(--text);border-radius:12px;padding:12px 14px;min-width:260px;outline:none}
     input[type="search"]:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(56,189,248,.25)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(148,163,184,.15);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .12s ease, border-color .12s ease}
+    nav.breadcrumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0;color:var(--muted);font-size:.95rem}
+    nav.breadcrumb a{color:var(--text);text-decoration:none;border:1px solid rgba(148,163,184,.25);padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.03)}
+    nav.breadcrumb .sep{opacity:.6}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:12px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(148,163,184,.15);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .12s ease, border-color .12s ease;cursor:default}
     .card:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.5)}
+    .clickable{cursor:pointer}
     .pill{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
     .pill .dot{width:8px;height:8px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.25)}
     .links{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
@@ -35,6 +39,7 @@
     .btn.gh{background:transparent}
     footer{margin:26px 0 6px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:#0b1220;border:1px solid rgba(148,163,184,.25);padding:.1rem .35rem;border-radius:6px}
+    .badge{font-size:.75rem;border:1px solid rgba(148,163,184,.25);padding:2px 6px;border-radius:999px}
   </style>
 </head>
 <body>
@@ -44,18 +49,20 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>Central de Projetos – <span class="muted">Curso Dev Quest</span></h1>
-          <div class="muted">Navegue pelos projetos deste repositório e abra os demos hospedados no GitHub Pages.</div>
+          <div class="muted">Navegue por pastas e abra os demos hospedados no GitHub Pages.</div>
         </div>
       </div>
       <div class="controls">
-        <input id="q" type="search" placeholder="Filtrar por nome… (ex.: react, grid, api)" />
+        <input id="q" type="search" placeholder="Filtrar nesta pasta… (ex.: react, grid, api)" />
       </div>
     </header>
+
+    <nav id="crumb" class="breadcrumb" aria-label="breadcrumb"></nav>
 
     <div id="grid" class="grid" role="list"></div>
 
     <footer>
-      <div>Proprietário: <span id="owner" class="kbd"></span> • Repositório: <span id="repo" class="kbd"></span></div>
+      <div>Proprietário: <span id="owner" class="kbd"></span> • Repositório: <span id="repo" class="kbd"></span> • Branch: <span id="branch" class="kbd"></span></div>
       <div>Dica: pressione <span class="kbd">/</span> para focar na busca</div>
     </footer>
   </div>
@@ -67,39 +74,42 @@
     const BRANCH = "main";               // branch padrão (main/master)
 
     // Regras simples para esconder pastas que não são projetos
-    const IGNORE_DIRS = new Set([".github", ".git", "node_modules", "docs", "assets", "images", "img", "_templates"]);
+    const IGNORE_DIRS = new Set([".github", ".git", "node_modules", ".vscode", "dist", "build", "coverage", "assets", "images", "img", "_templates"]);
 
-    // Heurísticas de nome bonitinho
     const pretty = (s) => s
       .replace(/[-_]/g, " ")
       .replace(/\b([a-z])/g, (m) => m.toUpperCase());
 
-    // Base URL do GitHub Pages para este repo
     const basePagesUrl = `https://${OWNER}.github.io/${REPO}`;
 
     document.getElementById("owner").textContent = OWNER;
     document.getElementById("repo").textContent = REPO;
+    document.getElementById("branch").textContent = BRANCH;
 
     const grid = document.getElementById("grid");
     const q = document.getElementById("q");
+    const crumb = document.getElementById("crumb");
 
     // Acessibilidade rápida: focar busca com /
     window.addEventListener("keydown", (e)=>{
       if(e.key === "/" && document.activeElement !== q){ e.preventDefault(); q.focus(); }
     });
 
-    // Busca os itens do diretório raiz e lista subpastas que parecem projetos
-    async function fetchRoot(){
-      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${BRANCH}`;
-      const res = await fetch(url);
-      if(!res.ok){ throw new Error(`Falha ao ler conteúdo do repositório: ${res.status}`); }
-      const items = await res.json();
-      return items.filter(x => x.type === "dir" && !IGNORE_DIRS.has(x.name));
+    // Estado da navegação
+    let currentPath = ""; // vazio = raiz do repo
+    let currentEntries = []; // cache da pasta atual
+
+    // Helpers API
+    const apiList = (path) => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path ? encodeURIComponent(path) : ""}?ref=${BRANCH}`;
+    const githubTreeUrl = (path) => `https://github.com/${OWNER}/${REPO}/tree/${BRANCH}/${path ? encodeURIComponent(path) : ""}`;
+    const pagesUrl = (path) => `${basePagesUrl}/${path ? encodeURIComponent(path) + "/" : ""}`;
+
+    function isIgnored(name){
+      return IGNORE_DIRS.has(name);
     }
 
     async function hasIndexHtml(path){
-      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
-      const res = await fetch(url);
+      const res = await fetch(apiList(path));
       if(!res.ok) return { index:false, readme:false };
       const items = await res.json();
       const names = items.map(i => i.name.toLowerCase());
@@ -109,9 +119,21 @@
       };
     }
 
-    function cardTemplate({ name, path, demo, readme }){
-      const ghUrl  = `https://github.com/${OWNER}/${REPO}/tree/${BRANCH}/${encodeURIComponent(path)}`;
-      const demoUrl = demo ? `${basePagesUrl}/${encodeURIComponent(path)}/` : null;
+    function folderCard({ name, path, count }){
+      return `
+        <article class="card clickable" data-path="${path}" role="listitem" aria-label="Abrir pasta ${name}">
+          <div class="pill"><span class="dot" aria-hidden="true"></span> <strong>📁 ${pretty(name)}</strong></div>
+          <div class="muted">${path}</div>
+          <div class="badge">${count ?? "—"} itens</div>
+          <div class="links">
+            <a class="btn gh" href="${githubTreeUrl(path)}" target="_blank" rel="noopener">Ver no GitHub</a>
+          </div>
+        </article>`;
+    }
+
+    function projectCard({ name, path, demo, readme }){
+      const ghUrl  = githubTreeUrl(path);
+      const demoUrl = demo ? pagesUrl(path) : null;
       return `
         <article class="card" role="listitem">
           <div class="pill"><span class="dot" aria-hidden="true"></span> <span>${pretty(name)}</span></div>
@@ -124,38 +146,77 @@
         </article>`;
     }
 
-    function render(list){
-      grid.innerHTML = list.map(cardTemplate).join("");
+    function render(entries){
+      grid.innerHTML = entries.map(e => e.kind === 'dir' ? folderCard(e) : projectCard(e)).join("");
+      grid.querySelectorAll('.clickable').forEach(el => {
+        el.addEventListener('click', () => openPath(el.dataset.path));
+      });
     }
 
-    function filter(list, term){
-      if(!term) return list;
-      term = term.toLowerCase();
-      return list.filter(i => i.name.toLowerCase().includes(term) || i.path.toLowerCase().includes(term));
+    function renderBreadcrumb(){
+      const parts = currentPath ? currentPath.split('/') : [];
+      let acc = [];
+      const items = [];
+      // Raiz
+      items.push(`<a href="#" data-path="">${REPO}</a>`);
+      parts.forEach((p, i) => {
+        acc.push(p);
+        items.push(`<span class="sep">/</span>`);
+        items.push(`<a href="#" data-path="${acc.join('/')}">${p}</a>`);
+      });
+      crumb.innerHTML = items.join('');
+      crumb.querySelectorAll('a[data-path]').forEach(a => {
+        a.addEventListener('click', (e)=>{ e.preventDefault(); openPath(a.dataset.path); });
+      });
     }
 
-    async function bootstrap(){
+    function filter(term){
+      term = (term||"").toLowerCase();
+      if(!term) return currentEntries;
+      return currentEntries.filter(i => i.name.toLowerCase().includes(term) || i.path.toLowerCase().includes(term));
+    }
+
+    async function openPath(path){
+      currentPath = path || "";
+      renderBreadcrumb();
+      grid.innerHTML = `<div class="muted">Carregando…</div>`;
       try{
-        const rootDirs = await fetchRoot();
-        // Para cada pasta do nível raiz, checar se tem index.html (demo)
-        const enriched = await Promise.all(rootDirs.map(async d => {
+        const res = await fetch(apiList(currentPath));
+        if(!res.ok) throw new Error(`Falha ao ler ${currentPath||"/"}: ${res.status}`);
+        const items = await res.json();
+
+        // Diretores e "projetos" (pastas com index.html)
+        const dirs = items.filter(x => x.type === 'dir' && !isIgnored(x.name));
+        const enriched = await Promise.all(dirs.map(async d => {
           const info = await hasIndexHtml(d.path);
-          return { name:d.name, path:d.path, demo:info.index, readme:info.readme };
+          // Se tem index.html, tratamos como projeto; senão, pasta navegável
+          return info.index
+            ? { kind:'proj', name:d.name, path:d.path, demo:true, readme:info.readme }
+            : { kind:'dir', name:d.name, path:d.path };
         }));
 
-        let current = [...enriched].sort((a,b)=>a.name.localeCompare(b.name));
-        render(current);
+        // Também tratamos a pasta atual como projeto caso ela própria tenha index.html
+        const selfInfo = await hasIndexHtml(currentPath);
+        const entries = [...enriched].sort((a,b)=>a.name.localeCompare(b.name));
+        currentEntries = entries;
+        render(entries);
 
-        q.addEventListener("input", ()=>{
-          render(filter(current, q.value));
-        });
+        // Se a própria pasta tem index, mostra um card do "Projeto atual"
+        if(selfInfo.index && currentPath){
+          const selfCard = projectCard({ name: currentPath.split('/').pop(), path: currentPath, demo:true, readme:selfInfo.readme });
+          grid.insertAdjacentHTML('afterbegin', selfCard);
+        }
       }catch(err){
-        grid.innerHTML = `<div class="muted">Erro ao carregar lista de projetos: ${err.message}</div>`;
+        grid.innerHTML = `<div class="muted">Erro ao carregar: ${err.message}</div>`;
         console.error(err);
       }
     }
 
-    bootstrap();
+    // Busca dinâmica
+    q.addEventListener("input", ()=>{ render(filter(q.value)); });
+
+    // Inicializa na raiz
+    openPath("");
   </script>
 </body>
 </html>
