@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Central de Projetos – Dev Quest</title>
+  <style>
+    :root{
+      --bg:#0f172a;/* slate-900 */
+      --card:#111827;/* gray-900 */
+      --muted:#94a3b8;/* slate-400 */
+      --text:#e5e7eb;/* gray-200 */
+      --accent:#22d3ee;/* cyan-400 */
+      --ring:#38bdf8;/* sky-400 */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(120deg,#0b1022,#0f172a);color:var(--text);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    header{display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:40px;height:40px;border-radius:12px;background:radial-gradient(circle at 30% 30%, #67e8f9, #22d3ee 40%, #0ea5e9 70%, #0f172a 100%);box-shadow:0 4px 18px rgba(34,211,238,.35)}
+    h1{font-size:clamp(1.2rem,2.4vw,1.8rem);margin:0}
+    .muted{color:var(--muted)}
+    .controls{display:flex;gap:10px;align-items:center}
+    input[type="search"]{appearance:none;border:1px solid rgba(148,163,184,.25);background:rgba(255,255,255,.03);color:var(--text);border-radius:12px;padding:12px 14px;min-width:260px;outline:none}
+    input[type="search"]:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(148,163,184,.15);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .12s ease, border-color .12s ease}
+    .card:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.5)}
+    .pill{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+    .pill .dot{width:8px;height:8px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.25)}
+    .links{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:1px solid rgba(148,163,184,.25);background:rgba(34,211,238,.1);color:#e6fbff;padding:8px 10px;border-radius:10px;text-decoration:none}
+    .btn.gh{background:transparent}
+    footer{margin:26px 0 6px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:#0b1220;border:1px solid rgba(148,163,184,.25);padding:.1rem .35rem;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Central de Projetos – <span class="muted">Curso Dev Quest</span></h1>
+          <div class="muted">Navegue pelos projetos deste repositório e abra os demos hospedados no GitHub Pages.</div>
+        </div>
+      </div>
+      <div class="controls">
+        <input id="q" type="search" placeholder="Filtrar por nome… (ex.: react, grid, api)" />
+      </div>
+    </header>
+
+    <div id="grid" class="grid" role="list"></div>
+
+    <footer>
+      <div>Proprietário: <span id="owner" class="kbd"></span> • Repositório: <span id="repo" class="kbd"></span></div>
+      <div>Dica: pressione <span class="kbd">/</span> para focar na busca</div>
+    </footer>
+  </div>
+
+  <script>
+    /*** CONFIGURÁVEL ***/
+    const OWNER = "Maicaoxd";            // seu usuário no GitHub
+    const REPO  = "Curso-Dev-Quest";     // nome do repositório
+    const BRANCH = "main";               // branch padrão (main/master)
+
+    // Regras simples para esconder pastas que não são projetos
+    const IGNORE_DIRS = new Set([".github", ".git", "node_modules", "docs", "assets", "images", "img", "_templates"]);
+
+    // Heurísticas de nome bonitinho
+    const pretty = (s) => s
+      .replace(/[-_]/g, " ")
+      .replace(/\b([a-z])/g, (m) => m.toUpperCase());
+
+    // Base URL do GitHub Pages para este repo
+    const basePagesUrl = `https://${OWNER}.github.io/${REPO}`;
+
+    document.getElementById("owner").textContent = OWNER;
+    document.getElementById("repo").textContent = REPO;
+
+    const grid = document.getElementById("grid");
+    const q = document.getElementById("q");
+
+    // Acessibilidade rápida: focar busca com /
+    window.addEventListener("keydown", (e)=>{
+      if(e.key === "/" && document.activeElement !== q){ e.preventDefault(); q.focus(); }
+    });
+
+    // Busca os itens do diretório raiz e lista subpastas que parecem projetos
+    async function fetchRoot(){
+      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${BRANCH}`;
+      const res = await fetch(url);
+      if(!res.ok){ throw new Error(`Falha ao ler conteúdo do repositório: ${res.status}`); }
+      const items = await res.json();
+      return items.filter(x => x.type === "dir" && !IGNORE_DIRS.has(x.name));
+    }
+
+    async function hasIndexHtml(path){
+      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+      const res = await fetch(url);
+      if(!res.ok) return { index:false, readme:false };
+      const items = await res.json();
+      const names = items.map(i => i.name.toLowerCase());
+      return {
+        index: names.includes("index.html") || names.includes("index.htm"),
+        readme: names.includes("readme.md") || names.includes("readme")
+      };
+    }
+
+    function cardTemplate({ name, path, demo, readme }){
+      const ghUrl  = `https://github.com/${OWNER}/${REPO}/tree/${BRANCH}/${encodeURIComponent(path)}`;
+      const demoUrl = demo ? `${basePagesUrl}/${encodeURIComponent(path)}/` : null;
+      return `
+        <article class="card" role="listitem">
+          <div class="pill"><span class="dot" aria-hidden="true"></span> <span>${pretty(name)}</span></div>
+          <div class="muted">${path}</div>
+          <div class="links">
+            ${demoUrl ? `<a class="btn" href="${demoUrl}" target="_blank" rel="noopener">Abrir Demo</a>` : ""}
+            <a class="btn gh" href="${ghUrl}" target="_blank" rel="noopener">Ver no GitHub</a>
+            ${!demoUrl && readme ? `<a class="btn gh" href="${ghUrl}#readme" target="_blank" rel="noopener">README</a>` : ""}
+          </div>
+        </article>`;
+    }
+
+    function render(list){
+      grid.innerHTML = list.map(cardTemplate).join("");
+    }
+
+    function filter(list, term){
+      if(!term) return list;
+      term = term.toLowerCase();
+      return list.filter(i => i.name.toLowerCase().includes(term) || i.path.toLowerCase().includes(term));
+    }
+
+    async function bootstrap(){
+      try{
+        const rootDirs = await fetchRoot();
+        // Para cada pasta do nível raiz, checar se tem index.html (demo)
+        const enriched = await Promise.all(rootDirs.map(async d => {
+          const info = await hasIndexHtml(d.path);
+          return { name:d.name, path:d.path, demo:info.index, readme:info.readme };
+        }));
+
+        let current = [...enriched].sort((a,b)=>a.name.localeCompare(b.name));
+        render(current);
+
+        q.addEventListener("input", ()=>{
+          render(filter(current, q.value));
+        });
+      }catch(err){
+        grid.innerHTML = `<div class="muted">Erro ao carregar lista de projetos: ${err.message}</div>`;
+        console.error(err);
+      }
+    }
+
+    bootstrap();
+  </script>
+</body>
+</html>
