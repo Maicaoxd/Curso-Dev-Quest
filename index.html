@@ -217,11 +217,11 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>Central de Projetos – <span class="muted">Curso Dev Quest</span></h1>
-          <div class="muted">Navegue por pastas e abra os demos hospedados no GitHub Pages.</div>
+          <div class="muted">Demonstrações somente em <strong>projetos</strong> e <strong>desafios</strong>.</div>
         </div>
       </div>
       <div class="controls">
-        <input id="q" type="search" placeholder="Filtrar nesta pasta… (ex.: react, grid, api)" />
+        <input id="q" type="search" placeholder="Filtrar nesta pasta… (ex.: grid, api, layout)" />
       </div>
     </header>
 
@@ -238,16 +238,17 @@
 
   <script>
     /*** CONFIGURÁVEL ***/
-    const OWNER = "Maicaoxd";            // seu usuário no GitHub
-    const REPO = "Curso-Dev-Quest";     // nome do repositório
-    const BRANCH = "main";               // branch padrão (main/master)
+    const OWNER = "Maicaoxd";
+    const REPO = "Curso-Dev-Quest";
+    const BRANCH = "main";
 
-    // Regras simples para esconder pastas que não são projetos
+    // Somente estas pastas terão demonstrações
+    const ALLOWED_ROOTS = new Set(["projetos", "desafios"]);
+
+    // Pastas utilitárias a ignorar
     const IGNORE_DIRS = new Set([".github", ".git", "node_modules", ".vscode", "dist", "build", "coverage", "assets", "images", "img", "_templates"]);
 
-    const pretty = (s) => s
-      .replace(/[-_]/g, " ")
-      .replace(/([a-z])/g, (m) => m.toUpperCase());
+    const pretty = (s) => s.replace(/[-_]/g, " ").replace(/\b([a-z])/g, (m) => m.toUpperCase());
 
     const basePagesUrl = `https://${OWNER}.github.io/${REPO}`;
 
@@ -259,74 +260,60 @@
     const q = document.getElementById("q");
     const crumb = document.getElementById("crumb");
 
-    // Acessibilidade rápida: focar busca com /
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "/" && document.activeElement !== q) { e.preventDefault(); q.focus(); }
-    });
+    // Acessibilidade: focar busca com /
+    window.addEventListener("keydown", (e) => { if (e.key === "/" && document.activeElement !== q) { e.preventDefault(); q.focus(); } });
 
-    // Estado da navegação
-    let currentPath = ""; // vazio = raiz do repo
-    let currentEntries = []; // cache da pasta atual
+    // Estado
+    let currentPath = ""; // vazio = raiz
+    let currentEntries = [];
 
-    // APIs: GitHub (primário) e jsDelivr (fallback) para contornar 403/rate limit
+    // APIs: GitHub (primário) + jsDelivr (fallback anti-403)
     const apiListGithub = (path) => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path ? encodeURIComponent(path) : ""}?ref=${BRANCH}`;
     const apiListJsDelivr = (path) => `https://data.jsdelivr.com/v1/package/gh/${OWNER}/${REPO}@${BRANCH}${path ? "/" + path : ""}`;
     const githubTreeUrl = (path) => `https://github.com/${OWNER}/${REPO}/tree/${BRANCH}/${path ? encodeURIComponent(path) : ""}`;
     const pagesUrl = (path) => `${basePagesUrl}/${path ? encodeURIComponent(path) + "/" : ""}`;
 
-    function isIgnored(name) {
-      return IGNORE_DIRS.has(name);
+    function isIgnored(name) { return IGNORE_DIRS.has(name); }
+
+    function isInsideAllowedRoots(path) {
+      if (!path) return true; // raiz pode mostrar as roots
+      const root = path.split("/")[0];
+      return ALLOWED_ROOTS.has(root);
     }
 
     async function listDir(path) {
-      // 1) Tenta GitHub API
+      // 1) GitHub API
       try {
         const res = await fetch(apiListGithub(path));
         if (res.ok) {
           const items = await res.json();
-          return items.map(i => ({
-            name: i.name,
-            path: i.path,
-            type: i.type === 'dir' ? 'directory' : 'file'
-          }));
+          return items.map(i => ({ name: i.name, path: i.path, type: i.type === 'dir' ? 'directory' : 'file' }));
         }
         if (res.status !== 403) throw new Error(`HTTP ${res.status}`);
-      } catch (e) { /* continua no fallback */ }
+      } catch (e) { /* fallback */ }
 
-      // 2) Fallback: jsDelivr Data API (sem limites tão restritos)
+      // 2) jsDelivr
       const res2 = await fetch(apiListJsDelivr(path));
       if (!res2.ok) throw new Error(`HTTP ${res2.status}`);
       const data = await res2.json();
       const files = Array.isArray(data.files) ? data.files : [];
       const base = path ? path.replace(/\/$/, '') + '/' : '';
-      return files
-        .filter(f => f.name !== '.' && f.name !== '..')
-        .map(f => ({
-          name: f.name,
-          path: base + f.name,
-          type: f.type === 'directory' ? 'directory' : 'file'
-        }));
+      return files.filter(f => f.name !== '.' && f.name !== '..').map(f => ({ name: f.name, path: base + f.name, type: f.type === 'directory' ? 'directory' : 'file' }));
     }
 
     async function hasIndexHtml(path) {
       try {
         const items = await listDir(path);
         const names = items.map(i => i.name.toLowerCase());
-        return {
-          index: names.includes('index.html') || names.includes('index.htm'),
-          readme: names.includes('readme.md') || names.includes('readme')
-        };
-      } catch {
-        return { index: false, readme: false };
-      }
+        return { index: names.includes('index.html') || names.includes('index.htm'), readme: names.includes('readme.md') || names.includes('readme') };
+      } catch { return { index: false, readme: false }; }
     }
 
-    function folderCard({ name, path, count }) {
+    function folderCard({ name, path }) {
       return `
         <article class="card clickable" data-path="${path}" role="listitem" aria-label="Abrir pasta ${name}">
           <div class="pill"><span class="dot" aria-hidden="true"></span> <strong>📁 ${pretty(name)}</strong></div>
-          <div class="muted">${path}</div>
-          <div class="badge">${count ?? "—"} itens</div>
+          <div class="muted">${path || REPO}</div>
           <div class="links">
             <a class="btn gh" href="${githubTreeUrl(path)}" target="_blank" rel="noopener">Ver no GitHub</a>
           </div>
@@ -350,26 +337,17 @@
 
     function render(entries) {
       grid.innerHTML = entries.map(e => e.kind === 'dir' ? folderCard(e) : projectCard(e)).join("");
-      grid.querySelectorAll('.clickable').forEach(el => {
-        el.addEventListener('click', () => openPath(el.dataset.path));
-      });
+      grid.querySelectorAll('.clickable').forEach(el => { el.addEventListener('click', () => openPath(el.dataset.path)); });
     }
 
     function renderBreadcrumb() {
       const parts = currentPath ? currentPath.split('/') : [];
       let acc = [];
       const items = [];
-      // Raiz
       items.push(`<a href="#" data-path="">${REPO}</a>`);
-      parts.forEach((p, i) => {
-        acc.push(p);
-        items.push(`<span class="sep">/</span>`);
-        items.push(`<a href="#" data-path="${acc.join('/')}">${p}</a>`);
-      });
+      parts.forEach(p => { acc.push(p); items.push(`<span class="sep">/</span>`); items.push(`<a href="#" data-path="${acc.join('/')}">${p}</a>`); });
       crumb.innerHTML = items.join('');
-      crumb.querySelectorAll('a[data-path]').forEach(a => {
-        a.addEventListener('click', (e) => { e.preventDefault(); openPath(a.dataset.path); });
-      });
+      crumb.querySelectorAll('a[data-path]').forEach(a => { a.addEventListener('click', (e) => { e.preventDefault(); openPath(a.dataset.path); }); });
     }
 
     function filter(term) {
@@ -383,37 +361,50 @@
       renderBreadcrumb();
       grid.innerHTML = `<div class="muted">Carregando…</div>`;
       try {
-        const items = await listDir(currentPath);
+        let entries = [];
+        if (!currentPath) {
+          // Raiz: mostrar somente as pastas permitidas (se existirem)
+          const rootItems = await listDir("");
+          const roots = rootItems.filter(i => i.type === 'directory' && ALLOWED_ROOTS.has(i.name));
+          entries = roots.map(r => ({ kind: 'dir', name: r.name, path: r.path }));
+        } else {
+          // Se tentar navegar fora das roots, volta para raiz
+          if (!isInsideAllowedRoots(currentPath)) {
+            currentPath = ""; renderBreadcrumb();
+            const rootItems = await listDir("");
+            const roots = rootItems.filter(i => i.type === 'directory' && ALLOWED_ROOTS.has(i.name));
+            entries = roots.map(r => ({ kind: 'dir', name: r.name, path: r.path }));
+          } else {
+            const items = await listDir(currentPath);
+            const dirs = items.filter(x => x.type === 'directory' && !isIgnored(x.name));
+            const enriched = await Promise.all(dirs.map(async d => {
+              const info = await hasIndexHtml(d.path);
+              return info.index
+                ? { kind: 'proj', name: d.name, path: d.path, demo: true, readme: info.readme }
+                : { kind: 'dir', name: d.name, path: d.path };
+            }));
 
-        // Diretores e "projetos" (pastas com index.html)
-        const dirs = items.filter(x => x.type === 'directory' && !isIgnored(x.name));
-        const enriched = await Promise.all(dirs.map(async d => {
-          const info = await hasIndexHtml(d.path);
-          return info.index
-            ? { kind: 'proj', name: d.name, path: d.path, demo: true, readme: info.readme }
-            : { kind: 'dir', name: d.name, path: d.path };
-        }));
+            const selfInfo = await hasIndexHtml(currentPath);
+            entries = [...enriched].sort((a, b) => a.name.localeCompare(b.name));
 
-        // Também tratamos a pasta atual como projeto caso ela própria tenha index.html
-        const selfInfo = await hasIndexHtml(currentPath);
-        const entries = [...enriched].sort((a, b) => a.name.localeCompare(b.name));
+            // Se a pasta atual possuir index.html, também mostrar como projeto (ex.: desafios/desafio-01)
+            if (selfInfo.index) {
+              entries.unshift({ kind: 'proj', name: currentPath.split('/').pop(), path: currentPath, demo: true, readme: selfInfo.readme });
+            }
+          }
+        }
+
         currentEntries = entries;
         render(entries);
-
-        if (selfInfo.index && currentPath) {
-          const selfCard = projectCard({ name: currentPath.split('/').pop(), path: currentPath, demo: true, readme: selfInfo.readme });
-          grid.insertAdjacentHTML('afterbegin', selfCard);
-        }
       } catch (err) {
-        grid.innerHTML = `<div class="muted">Erro ao carregar: ${err.message}. Tente recarregar. Se persistir, ativei fallback via jsDelivr (sem autenticação/limite rígido).`;
+        grid.innerHTML = `<div class="muted">Erro ao carregar: ${err.message}. Se persistir, o fallback jsDelivr deve manter a navegação ativa.</div>`;
         console.error(err);
       }
     }
 
-    // Busca dinâmica
     q.addEventListener("input", () => { render(filter(q.value)); });
 
-    // Inicializa na raiz
+    // Começa na raiz (mostrando apenas projetos e desafios)
     openPath("");
   </script>
 </body>
