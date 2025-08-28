@@ -1,12 +1,67 @@
-# React + Vite
+# 🚀 Quest - Base do React  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositório contém a resolução da **Quest de Fundamentos do React**, proposta no curso **Dev em Dobro**.  
+O objetivo é praticar os principais conceitos do React, como **componentes, props, eventos e renderização**.  
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🎯 Objetivos da Quest  
 
-## Expanding the ESLint configuration
+### 🔹 Desafio 1: Componente de Texto Colorido  
+- Criar um componente que receba **texto e cor** como props.  
+- O texto deve ser exibido em **maiúsculas (uppercase)**.  
+- A cor do texto deve ser aplicada via **style inline**.  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🔹 Desafio 2: Componente Button Interativo  
+- Criar um componente `Button` que receba uma **label** como prop.  
+- Ao clicar no botão, exibir um **alert** mostrando a label:  
+  > "A label desse botão é `<label>`".  
+
+---
+
+## 🛠️ Tecnologias utilizadas  
+- **React.js** (com Vite)  
+- **JavaScript (ES6+)**  
+- **PropTypes** para validação de props  
+
+---
+
+## 📂 Estrutura do projeto  
+
+```bash
+src/
+├─ components/
+│ ├─ paragraph/ → componente do desafio 1
+│ ├─ button/ → componente do desafio 2
+├─ App.jsx → uso dos componentes
+├─ main.jsx → ponto de entrada
+```
+
+---
+
+## 🚀 Como rodar o projeto  
+1. Clonar o repositório  
+```bash
+git clone https://github.com/maicaoxd/desafios/react/react-props-eventos.git 
+```
+
+2. Instalar dependências
+```bash
+npm install
+```
+
+3. Rodar o servidor de desenvolvimento
+
+```bash
+npm run dev
+```
+
+## ✅ Aprendizados
+
+- Criar e reutilizar componentes de função
+
+- Passar props para personalizar componentes
+
+- Usar defaultProps e PropTypes
+
+- Trabalhar com eventos no React (onClick)
