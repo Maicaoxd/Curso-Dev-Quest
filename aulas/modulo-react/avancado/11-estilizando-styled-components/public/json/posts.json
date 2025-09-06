@@ -1,0 +1,14 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "Titulo post 1",
+            "image": "https://p2.trrsf.com/image/fget/cf/648/0/images.terra.com/2021/11/18/1896350505-5e8f963f77cdc.jpeg"
+        },
+        {
+            "id": 2,
+            "title": "Titulo post 2",
+            "image": "https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455_960_720.jpg"
+        }
+    ]
+}

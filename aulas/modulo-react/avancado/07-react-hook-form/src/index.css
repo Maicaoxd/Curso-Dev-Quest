@@ -1,0 +1,115 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url(./assets/bg-repeat.jpg) center center repeat-x;
+  background-size: contain;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.copy {
+  max-width: 320px;
+  color: white;
+  margin: 50px;
+}
+
+.copy h1{
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+form {
+  width: 500px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 20px;
+  border-radius: 5px;
+}
+
+input {
+  border-radius: 3px;
+  padding: 10px;
+  border: 1px solid black;
+  margin: 7px 0;
+}
+
+input:focus, textarea:focus{
+  outline: none;
+}
+
+input::placeholder{
+  color: #A8A8A8;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+textarea {
+  font-size: 0.9rem;
+  font-family: 'Roboto', sans-serif;
+  padding: 10px;
+  margin: 7px 0;
+  border-radius: 5px;
+  border: 1px solid black;
+  resize: none;
+}
+
+/* BORDINHA MÓVEL DO TEXTAREA */
+
+.instrucao {
+  margin-top: 10px;
+  margin-bottom: -14px;
+}
+
+.enviar {
+  background-color: #3ccc87;
+  padding: 15px;
+  margin-top: 25px;
+  color: white;
+  font-size: 1rem;
+  font-weight: bolder;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+}
+
+.enviar:hover{
+  background-color: #3ccc87;
+  opacity: 0.8;
+}
+
+/* CLASSES PARA MANIPULAÇÃO COM JS */
+
+
+.campo-obrigatorio {
+  border: 2px solid red;
+}
+
+.campo-preenchido {
+  border: 2px solid green;
+}
+
+.mensagem-alerta {
+  color: red;
+  font-size: 9px;
+  margin-top: -7px;
+  visibility: hidden;
+}
+
+.mostrar-erro {
+  visibility: visible;
+}
