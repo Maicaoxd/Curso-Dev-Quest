@@ -106,8 +106,8 @@ src/
 
 ```bash
 # 1) Clonar o repositório
-git clone <[https://github.com/Maicaoxd/Curso-Dev-Quest.git](https://github.com/Maicaoxd/Curso-Dev-Quest.git)>
-cd <teste-tecnico-pokedex>
+git clone https://github.com/Maicaoxd/Curso-Dev-Quest.git
+cd desafios/react/teste-tecnico-pokedex
 
 # 2) Instalar dependências
 npm install
