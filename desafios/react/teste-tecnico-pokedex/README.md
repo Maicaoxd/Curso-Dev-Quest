@@ -106,7 +106,7 @@ src/
 
 ```bash
 # 1) Clonar o repositório
-git clone <URL-do-seu-repo>
+git clone <[https://github.com/Maicaoxd/Curso-Dev-Quest.git](https://github.com/Maicaoxd/Curso-Dev-Quest.git)>
 cd <teste-tecnico-pokedex>
 
 # 2) Instalar dependências
